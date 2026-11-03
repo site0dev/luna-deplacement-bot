@@ -205,7 +205,32 @@ const labels={fr:[["Présentation","profile"],["Galerie","gallery"],["Prestation
 const keyboard=l=>({inline_keyboard:labels[l].map(([text,action])=>[{text,callback_data:action+":"+l}])});
 async function tg(method,payload){const r=await fetch(`https://api.telegram.org/bot${TOKEN}/${method}`,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify(payload)});const j=await r.json();if(!j.ok)throw Error(j.description);return j.result;}
 const send=(chat_id,text,reply_markup)=>tg("sendMessage",{chat_id,text, ...(reply_markup?{reply_markup}:{})});
-async function gallery(chat,l){const urls=(process.env.GALLERY_PHOTO_URLS||"").split(",").map(s=>s.trim()).filter(Boolean).slice(0,10);if(!urls.length)return send(chat,l==="en"?"The gallery is being prepared.":l==="de"?"Die Galerie wird vorbereitet.":"La galerie est en préparation.");return tg("sendMediaGroup",{chat_id:chat,media:urls.map((media,i)=>({type:"photo",media,...(i===0?{caption:"Luna Deplacement"}:{})}))});}
+
+// Galerie GitHub : 14 photos, envoyées en deux albums Telegram (10 + 4).
+async function gallery(chat,l){
+const names=[
+"E2VP8gdVIAMQfIQ.jpg_small.jpg",
+"F13_pygX0AAV9kr.jpg_small.jpg",
+"F8GE8dUXkAA_zYJ.jpg_small.jpg",
+"FMquv7LUYAMuHYF.jpg_small.jpg",
+"FSGD6kzVkAAfCay.jpg_small.jpg",
+"FSk0Z64VEAQvdIt.jpg_small.jpg",
+"FeHyWhJVIAA5yuB.jpg_small.jpg",
+"FjK8OG3UAAAbbBQ.jpg_small.jpg",
+"FnsIBAZakAIoqcl.jpg_small.jpg",
+"FokLQfjaYAAQgRG.jpg_small.jpg",
+"FsunwbKaIAAbTfo.jpg_small.jpg",
+"GbNeA2CakAEhU5R.jpg_small.jpg",
+"GtWTda8WQAArTcf.jpg_small.jpg",
+"Gxm62xPWoAAOOnE.jpg_small.jpg"
+];
+const base="https://raw.githubusercontent.com/site0dev/luna-deplacement-bot/main/images/";
+const urls=names.map(name=>base+encodeURIComponent(name));
+const first=urls.slice(0,10).map((media,i)=>({type:"photo",media,...(i===0?{caption:"Galerie photo — Luna Deplacement"}:{})}));
+const second=urls.slice(10).map(media=>({type:"photo",media}));
+await tg("sendMediaGroup",{chat_id:chat,media:first});
+return tg("sendMediaGroup",{chat_id:chat,media:second});
+}
 async function message(m){const chat=m.chat.id,txt=m.text||"",match=txt.match(/^\/([a-z_]+)(?:@\w+)?(?:\s+([\s\S]*))?$/i);if(!match){if(!txt.trim())return;const who=m.from.username?"@"+m.from.username:(m.from.first_name||"Utilisateur")+" (ID "+m.from.id+")";if(ADMIN){await send(ADMIN,"Nouvelle demande Luna Deplacement\nDe : "+who+"\nChat : "+chat+"\n\n"+txt.trim());return send(chat,"Demande transmise à Luna. Le rendez-vous reste à confirmer.");}return send(chat,"Votre message est reçu. La notification à Luna n'est pas encore configurée.");}const cmd=match[1].toLowerCase(),args=(match[2]||"").trim(),l="fr";
 if(cmd==="myid")return send(chat,"Votre identifiant Telegram : "+chat);
 if(cmd==="start")return send(chat,T[l].welcome,keyboard(l));
