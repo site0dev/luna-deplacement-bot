@@ -204,40 +204,75 @@ Ihre Anfrage muss direkt von Luna bestätigt werden.`,
 const labels={fr:[["Présentation","profile"],["Galerie","gallery"],["Prestations","services"],["Tarifs","prices"],["Disponibilités","availability"],["Réserver","booking"],["Langue","language"],["Aide","help"]],en:[["Profile","profile"],["Gallery","gallery"],["Services","services"],["Rates","prices"],["Availability","availability"],["Request appointment","booking"],["Language","language"],["Help","help"]],de:[["Profil","profile"],["Galerie","gallery"],["Leistungen","services"],["Preise","prices"],["Verfügbarkeit","availability"],["Termin anfragen","booking"],["Sprache","language"],["Hilfe","help"]]};
 const keyboard=l=>({inline_keyboard:labels[l].map(([text,action])=>[{text,callback_data:action+":"+l}])});
 async function tg(method,payload){const r=await fetch(`https://api.telegram.org/bot${TOKEN}/${method}`,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify(payload)});const j=await r.json();if(!j.ok)throw Error(j.description);return j.result;}
-const send=(chat_id,text,reply_markup)=>tg("sendMessage",{chat_id,text, ...(reply_markup?{reply_markup}:{})});
+const send=(chat_id,text,reply_markup)=>tg("sendMessage",{chat_id,text,...(reply_markup?{reply_markup}:{})});
 
-// Galerie GitHub : 14 photos, envoyées en deux albums Telegram (10 + 4).
-async function gallery(chat,l){
-const names=[
-"E2VP8gdVIAMQfIQ.jpg_small.jpg",
-"F13_pygX0AAV9kr.jpg_small.jpg",
-"F8GE8dUXkAA_zYJ.jpg_small.jpg",
-"FMquv7LUYAMuHYF.jpg_small.jpg",
-"FSGD6kzVkAAfCay.jpg_small.jpg",
-"FSk0Z64VEAQvdIt.jpg_small.jpg",
-"FeHyWhJVIAA5yuB.jpg_small.jpg",
-"FjK8OG3UAAAbbBQ.jpg_small.jpg",
-"FnsIBAZakAIoqcl.jpg_small.jpg",
-"FokLQfjaYAAQgRG.jpg_small.jpg",
-"FsunwbKaIAAbTfo.jpg_small.jpg",
-"GbNeA2CakAEhU5R.jpg_small.jpg",
-"GtWTda8WQAArTcf.jpg_small.jpg",
-"Gxm62xPWoAAOOnE.jpg_small.jpg"
-];
-const base="https://raw.githubusercontent.com/site0dev/luna-deplacement-bot/main/images/";
-const urls=names.map(name=>base+encodeURIComponent(name));
-const first=urls.slice(0,10).map((media,i)=>({type:"photo",media,...(i===0?{caption:"Galerie photo — Luna Deplacement"}:{})}));
-const second=urls.slice(10).map(media=>({type:"photo",media}));
-await tg("sendMediaGroup",{chat_id:chat,media:first});
-return tg("sendMediaGroup",{chat_id:chat,media:second});
+// Télécharge les images depuis GitHub puis les envoie directement à Telegram.
+async function sendPhotoAlbum(chat_id,urls,caption){
+  const form=new FormData();
+  const media=[];
+  for(let i=0;i<urls.length;i++){
+    const response=await fetch(urls[i]);
+    if(!response.ok)throw new Error("Image inaccessible : "+urls[i]+" (HTTP "+response.status+")");
+    const blob=await response.blob();
+    const filename=`photo${i}.jpg`;
+    form.append(filename,blob,filename);
+    media.push({type:"photo",media:`attach://${filename}`,...(i===0&&caption?{caption}:{})});
+  }
+  form.append("chat_id",String(chat_id));
+  form.append("media",JSON.stringify(media));
+  const response=await fetch(`https://api.telegram.org/bot${TOKEN}/sendMediaGroup`,{method:"POST",body:form});
+  const result=await response.json();
+  if(!result.ok)throw Error(result.description);
+  return result.result;
 }
-async function message(m){const chat=m.chat.id,txt=m.text||"",match=txt.match(/^\/([a-z_]+)(?:@\w+)?(?:\s+([\s\S]*))?$/i);if(!match){if(!txt.trim())return;const who=m.from.username?"@"+m.from.username:(m.from.first_name||"Utilisateur")+" (ID "+m.from.id+")";if(ADMIN){await send(ADMIN,"Nouvelle demande Luna Deplacement\nDe : "+who+"\nChat : "+chat+"\n\n"+txt.trim());return send(chat,"Demande transmise à Luna. Le rendez-vous reste à confirmer.");}return send(chat,"Votre message est reçu. La notification à Luna n'est pas encore configurée.");}const cmd=match[1].toLowerCase(),args=(match[2]||"").trim(),l="fr";
-if(cmd==="myid")return send(chat,"Votre identifiant Telegram : "+chat);
-if(cmd==="start")return send(chat,T[l].welcome,keyboard(l));
-if(["profile","services","prices","availability","contact","help"].includes(cmd))return send(chat,T[l][cmd],keyboard(l));
-if(cmd==="gallery")return gallery(chat,l);
-if(cmd==="language")return send(chat,T[l].language,{inline_keyboard:[[{text:"Français",callback_data:"setlang:fr"},{text:"English",callback_data:"setlang:en"},{text:"Deutsch",callback_data:"setlang:de"}]]});
-if(cmd==="booking"){if(!args)return send(chat,T[l].booking,keyboard(l));const who=m.from.username?"@"+m.from.username:(m.from.first_name||"Utilisateur")+" (ID "+m.from.id+")";if(ADMIN)await send(ADMIN,"Nouvelle demande Luna Deplacement\nDe : "+who+"\nChat : "+chat+"\n\n"+args);return send(chat,ADMIN?"Demande transmise à Luna. Le rendez-vous reste à confirmer.":"Demande reçue, mais la notification à Luna n'est pas encore configurée. L'administrateur doit ajouter votre identifiant dans ADMIN_CHAT_ID.");}
-return send(chat,"Commande inconnue. Utilisez /help.");}
-async function callback(c){await tg("answerCallbackQuery",{callback_query_id:c.id});const chat=c.message.chat.id,d=c.data||"";if(d.startsWith("setlang:")){const l=T[d.split(":")[1]]?d.split(":")[1]:"fr";return send(chat,T[l].welcome,keyboard(l));}const [a,raw]=d.split(":"),l=T[raw]?raw:"fr";if(a==="gallery")return gallery(chat,l);if(a==="language")return send(chat,T[l].language,{inline_keyboard:[[{text:"Français",callback_data:"setlang:fr"},{text:"English",callback_data:"setlang:en"},{text:"Deutsch",callback_data:"setlang:de"}]]});if(a==="booking")return send(chat,T[l].booking,keyboard(l));if(T[l][a])return send(chat,T[l][a],keyboard(l));}
-module.exports=async(req,res)=>{if(req.method!=="POST")return res.status(405).send("Method Not Allowed");if(!TOKEN||!SECRET)return res.status(500).send("Missing configuration");if(req.headers["x-telegram-bot-api-secret-token"]!==SECRET)return res.status(401).send("Unauthorized");try{const u=req.body||{};if(u.message)await message(u.message);if(u.callback_query)await callback(u.callback_query);}catch(e){console.error(e.message);}return res.status(200).send("OK");};
+
+// Galerie : 14 photos envoyées automatiquement en deux albums (10 + 4).
+async function gallery(chat,l){
+  const names=["E2VP8gdVIAMQfIQ.jpg_small.jpg","F13_pygX0AAV9kr.jpg_small.jpg","F8GE8dUXkAA_zYJ.jpg_small.jpg","FMquv7LUYAMuHYF.jpg_small.jpg","FSGD6kzVkAAfCay.jpg_small.jpg","FSk0Z64VEAQvdIt.jpg_small.jpg","FeHyWhJVIAA5yuB.jpg_small.jpg","FjK8OG3UAAAbbBQ.jpg_small.jpg","FnsIBAZakAIoqcl.jpg_small.jpg","FokLQfjaYAAQgRG.jpg_small.jpg","FsunwbKaIAAbTfo.jpg_small.jpg","GbNeA2CakAEhU5R.jpg_small.jpg","GtWTda8WQAArTcf.jpg_small.jpg","Gxm62xPWoAAOOnE.jpg_small.jpg"];
+  const base="https://raw.githubusercontent.com/site0dev/luna-deplacement-bot/main/images/";
+  const urls=names.map(name=>base+encodeURIComponent(name));
+  await sendPhotoAlbum(chat,urls.slice(0,10),"Galerie photo — Luna Deplacement");
+  return sendPhotoAlbum(chat,urls.slice(10),null);
+}
+
+async function message(m){
+  const chat=m.chat.id,txt=m.text||"",match=txt.match(/^\/([a-z_]+)(?:@\w+)?(?:\s+([\s\S]*))?$/i);
+  if(!match){
+    if(!txt.trim())return;
+    const who=m.from.username?"@"+m.from.username:(m.from.first_name||"Utilisateur")+" (ID "+m.from.id+")";
+    if(ADMIN){await send(ADMIN,"Nouvelle demande Luna Deplacement\nDe : "+who+"\nChat : "+chat+"\n\n"+txt.trim());return send(chat,"Demande transmise à Luna. Le rendez-vous reste à confirmer.");}
+    return send(chat,"Votre message est reçu. La notification à Luna n'est pas encore configurée.");
+  }
+  const cmd=match[1].toLowerCase(),args=(match[2]||"").trim(),l="fr";
+  if(cmd==="myid")return send(chat,"Votre identifiant Telegram : "+chat);
+  if(cmd==="start")return send(chat,T[l].welcome,keyboard(l));
+  if(["profile","services","prices","availability","contact","help"].includes(cmd))return send(chat,T[l][cmd],keyboard(l));
+  if(cmd==="gallery")return gallery(chat,l);
+  if(cmd==="language")return send(chat,T[l].language,{inline_keyboard:[[{text:"Français",callback_data:"setlang:fr"},{text:"English",callback_data:"setlang:en"},{text:"Deutsch",callback_data:"setlang:de"}]]});
+  if(cmd==="booking"){
+    if(!args)return send(chat,T[l].booking,keyboard(l));
+    const who=m.from.username?"@"+m.from.username:(m.from.first_name||"Utilisateur")+" (ID "+m.from.id+")";
+    if(ADMIN)await send(ADMIN,"Nouvelle demande Luna Deplacement\nDe : "+who+"\nChat : "+chat+"\n\n"+args);
+    return send(chat,ADMIN?"Demande transmise à Luna. Le rendez-vous reste à confirmer.":"Demande reçue, mais la notification à Luna n'est pas encore configurée. L'administrateur doit ajouter votre identifiant dans ADMIN_CHAT_ID.");
+  }
+  return send(chat,"Commande inconnue. Utilisez /help.");
+}
+
+async function callback(c){
+  await tg("answerCallbackQuery",{callback_query_id:c.id});
+  const chat=c.message.chat.id,d=c.data||"";
+  if(d.startsWith("setlang:")){const l=T[d.split(":")[1]]?d.split(":")[1]:"fr";return send(chat,T[l].welcome,keyboard(l));}
+  const [a,raw]=d.split(":"),l=T[raw]?raw:"fr";
+  if(a==="gallery")return gallery(chat,l);
+  if(a==="language")return send(chat,T[l].language,{inline_keyboard:[[{text:"Français",callback_data:"setlang:fr"},{text:"English",callback_data:"setlang:en"},{text:"Deutsch",callback_data:"setlang:de"}]]});
+  if(a==="booking")return send(chat,T[l].booking,keyboard(l));
+  if(T[l][a])return send(chat,T[l][a],keyboard(l));
+}
+
+module.exports=async(req,res)=>{
+  if(req.method!=="POST")return res.status(405).send("Method Not Allowed");
+  if(!TOKEN||!SECRET)return res.status(500).send("Missing configuration");
+  if(req.headers["x-telegram-bot-api-secret-token"]!==SECRET)return res.status(401).send("Unauthorized");
+  try{const u=req.body||{};if(u.message)await message(u.message);if(u.callback_query)await callback(u.callback_query);}catch(e){console.error(e.message);}
+  return res.status(200).send("OK");
+};
