@@ -1,219 +1,66 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#10101b">
-  <meta name="description" content="Luna Deplacement — profil indépendant, informations et demandes de rendez-vous.">
-  <title>Luna Deplacement — Profil indépendant</title>
-  <style>
-    :root {
-      --bg: #10101b;
-      --panel: #191927;
-      --panel-soft: #202033;
-      --gold: #d9b878;
-      --gold-light: #f0d9a8;
-      --text: #f6f1e8;
-      --muted: #b9b3aa;
-      --line: rgba(217,184,120,.22);
-    }
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body {
-      margin: 0;
-      color: var(--text);
-      background:
-        radial-gradient(ellipse at 50% -15%, rgba(120,91,153,.25), transparent 48%),
-        var(--bg);
-      font-family: Georgia, "Times New Roman", serif;
-      line-height: 1.65;
-    }
-    a { color: inherit; text-decoration: none; }
-    .wrap { width: min(1080px, calc(100% - 36px)); margin: auto; }
-    header {
-      position: sticky; top: 0; z-index: 5;
-      background: rgba(16,16,27,.9);
-      border-bottom: 1px solid var(--line);
-      backdrop-filter: blur(14px);
-    }
-    .nav {
-      min-height: 68px; display: flex; align-items: center;
-      justify-content: space-between; gap: 18px;
-    }
-    .brand { color: var(--gold-light); font-size: 1.2rem; letter-spacing: .08em; }
-    nav { display: flex; gap: 18px; flex-wrap: wrap; }
-    nav a { color: var(--muted); font: 500 .88rem Arial, sans-serif; }
-    nav a:hover { color: var(--gold-light); }
-    .hero { padding: 92px 0 76px; text-align: center; }
-    .moon { color: var(--gold); font-size: 2rem; }
-    .eyebrow { color: var(--gold); letter-spacing: .22em; text-transform: uppercase; font: .72rem Arial, sans-serif; }
-    h1 { margin: 12px 0; font-size: clamp(2.7rem, 8vw, 5.4rem); font-weight: 400; line-height: 1.05; }
-    .hero p { max-width: 680px; margin: 20px auto 28px; color: var(--muted); font-size: 1.08rem; }
-    .button {
-      display: inline-block; padding: 13px 24px; border-radius: 999px;
-      background: linear-gradient(135deg, var(--gold-light), var(--gold));
-      color: #211b12; font: 700 .9rem Arial, sans-serif;
-      box-shadow: 0 8px 30px rgba(217,184,120,.15);
-    }
-    .button:hover { transform: translateY(-1px); }
-    section { padding: 54px 0; }
-    .section-title { text-align: center; margin: 0 0 28px; font-size: 2rem; font-weight: 400; }
-    .section-title span { color: var(--gold); }
-    .intro, .info-card {
-      background: linear-gradient(145deg, rgba(32,32,51,.95), rgba(25,25,39,.95));
-      border: 1px solid var(--line); border-radius: 20px; padding: 28px;
-    }
-    .intro { max-width: 820px; margin: auto; text-align: center; color: var(--muted); }
-    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-    .photo {
-      width: 100%; aspect-ratio: 4 / 5; object-fit: cover;
-      display: block; border-radius: 14px; background: var(--panel-soft);
-      border: 1px solid var(--line);
-    }
-    .gallery-note { text-align: center; color: var(--muted); font: .85rem Arial, sans-serif; margin-top: 18px; }
-    .info-card h3 { color: var(--gold-light); font-weight: 400; margin: 0 0 10px; font-size: 1.3rem; }
-    .info-card p, .info-card li { color: var(--muted); }
-    .info-card ul { padding-left: 20px; margin-bottom: 0; }
-    .rates { max-width: 620px; margin: auto; }
-    .rate-row { display: flex; justify-content: space-between; gap: 15px; padding: 12px 0; border-bottom: 1px solid var(--line); }
-    .rate-row:last-child { border: 0; }
-    .rate-row strong { color: var(--gold-light); font-weight: 400; }
-    .small { color: var(--muted); font: .84rem Arial, sans-serif; text-align: center; }
-    .contact { text-align: center; }
-    footer { border-top: 1px solid var(--line); padding: 26px 0; color: var(--muted); text-align: center; font: .8rem Arial, sans-serif; }
-    .age { display: inline-block; margin-top: 18px; color: var(--gold); border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px; font: .75rem Arial, sans-serif; }
-    @media (max-width: 720px) {
-      .nav { padding: 12px 0; align-items: flex-start; flex-direction: column; }
-      nav { gap: 12px; }
-      .hero { padding: 66px 0 48px; }
-      .grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-      section { padding: 38px 0; }
-      .intro, .info-card { padding: 21px; }
-    }
-    @media (max-width: 380px) { .grid { grid-template-columns: 1fr 1fr; } }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#10101b">
+<meta name="description" content="Luna Deplacement | Profil privé indépendant. Disponible 24h/24. Déplacements sur demande. Français • English • Deutsch.">
+<title>Luna Deplacement | Profil privé indépendant</title>
+<style>
+:root{--bg:#10101b;--panel:#1b1b2b;--gold:#d9b878;--light:#f0d9a8;--text:#f6f1e8;--muted:#b9b3aa;--line:rgba(217,184,120,.24)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(ellipse at 50% -15%,rgba(120,91,153,.24),transparent 48%),var(--bg);color:var(--text);font-family:Georgia,serif;line-height:1.65}
+a{color:inherit;text-decoration:none}.wrap{width:min(1080px,calc(100% - 36px));margin:auto}
+header{position:sticky;top:0;z-index:5;background:rgba(16,16,27,.92);border-bottom:1px solid var(--line);backdrop-filter:blur(14px)}
+.nav{min-height:68px;display:flex;align-items:center;justify-content:space-between;gap:18px}.brand{color:var(--light);font-size:1.15rem;letter-spacing:.07em}
+nav{display:flex;gap:18px;flex-wrap:wrap}nav a{color:var(--muted);font:500 .88rem Arial,sans-serif}nav a:hover{color:var(--light)}
+.hero{padding:86px 0 70px;text-align:center}.moon{color:var(--gold);font-size:2rem}.eyebrow{color:var(--gold);letter-spacing:.16em;text-transform:uppercase;font:.75rem Arial,sans-serif}
+h1{margin:12px 0;font-size:clamp(2.7rem,8vw,5.2rem);font-weight:400;line-height:1.05}.hero p{max-width:700px;margin:20px auto 28px;color:var(--muted);font-size:1.08rem}
+.button{display:inline-block;padding:13px 24px;border-radius:999px;background:linear-gradient(135deg,var(--light),var(--gold));color:#211b12;font:700 .9rem Arial,sans-serif}
+section{padding:48px 0}.section-title{text-align:center;margin:0 0 28px;font-size:2rem;font-weight:400}.section-title span{color:var(--gold)}
+.intro,.card{background:linear-gradient(145deg,#202033,#191927);border:1px solid var(--line);border-radius:20px;padding:27px}.intro{max-width:820px;margin:auto;text-align:center;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.photo{width:100%;aspect-ratio:4/5;object-fit:cover;display:block;border-radius:14px;background:var(--panel);border:1px solid var(--line)}
+.card h3{color:var(--light);font-weight:400;margin:0 0 10px}.card p,.card li{color:var(--muted)}.rates{max-width:620px;margin:auto}.rate{display:flex;justify-content:space-between;gap:15px;padding:11px 0;border-bottom:1px solid var(--line)}.rate:last-of-type{border:0}.rate strong{color:var(--light);font-weight:400}
+.note,.gallery-note{color:var(--muted);font: .84rem Arial,sans-serif;text-align:center}.gallery-note{margin-top:18px}.contact{text-align:center}
+footer{border-top:1px solid var(--line);padding:25px 0;color:var(--muted);text-align:center;font:.8rem Arial,sans-serif}.age{display:inline-block;margin-top:18px;color:var(--gold);border:1px solid var(--line);border-radius:999px;padding:5px 12px;font:.75rem Arial,sans-serif}
+@media(max-width:720px){.nav{padding:12px 0;align-items:flex-start;flex-direction:column}nav{gap:12px}.hero{padding:60px 0 45px}.grid{grid-template-columns:repeat(2,1fr);gap:10px}section{padding:36px 0}.intro,.card{padding:20px}}
+</style>
 </head>
 <body>
-  <header>
-    <div class="wrap nav">
-      <a class="brand" href="#accueil">☾ LUNA DEPLACEMENT</a>
-      <nav aria-label="Navigation principale">
-        <a href="#profil">Profil</a>
-        <a href="#galerie">Galerie</a>
-        <a href="#prestations">Prestations</a>
-        <a href="#tarifs">Tarifs</a>
-        <a href="#contact">Contact</a>
-      </nav>
-    </div>
-  </header>
-
-  <main>
-    <section class="hero" id="accueil">
-      <div class="wrap">
-        <div class="moon">☾</div>
-        <div class="eyebrow">Profil indépendant · Sur demande</div>
-        <h1>Luna Deplacement</h1>
-        <p>Un univers élégant et discret. Découvrez le profil, les informations pratiques et les modalités de demande de rendez-vous.</p>
-        <a class="button" href="https://t.me/Luna_deplacement_bot" target="_blank" rel="noopener">Contacter sur Telegram</a>
-        <div><span class="age">Réservé aux adultes · 18+</span></div>
-      </div>
-    </section>
-
-    <section id="profil">
-      <div class="wrap">
-        <h2 class="section-title">Présentation <span>✦</span></h2>
-        <div class="intro">
-          Élégante et raffinée, cette charmante Française d’origine asiatique séduit par son charme naturel, sa douceur et son sourire envoûtant. Sensuelle, attentionnée et pleine de délicatesse, elle vous promet un moment de complicité et d’évasion dans une atmosphère chaleureuse et discrète.
-        </div>
-      </div>
-    </section>
-
-    <section id="galerie">
-      <div class="wrap">
-        <h2 class="section-title">Galerie <span>✦</span></h2>
-        <div class="grid" id="gallery"></div>
-        <p class="gallery-note">Galerie photo — Luna Deplacement</p>
-      </div>
-    </section>
-
-    <section id="prestations">
-      <div class="wrap">
-        <h2 class="section-title">Prestations <span>✦</span></h2>
-        <div class="grid">
-          <article class="info-card">
-            <h3>Moments de détente</h3>
-            <p>Différentes options de bien-être et de détente peuvent être évoquées lors d'un échange préalable.</p>
-          </article>
-          <article class="info-card">
-            <h3>Expériences personnalisées</h3>
-            <p>Les demandes particulières et les conditions sont à discuter directement, dans le respect du consentement et des limites de chacun.</p>
-          </article>
-          <article class="info-card">
-            <h3>Confort & discrétion</h3>
-            <p>Les modalités pratiques, le lieu et les disponibilités doivent être confirmés avant tout rendez-vous.</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section id="tarifs">
-      <div class="wrap">
-        <h2 class="section-title">Tarifs <span>✦</span></h2>
-        <div class="info-card rates">
-          <div class="rate-row"><span>15 minutes</span><strong>50 €</strong></div>
-          <div class="rate-row"><span>30 minutes</span><strong>100 €</strong></div>
-          <div class="rate-row"><span>1 heure</span><strong>150 €</strong></div>
-          <div class="rate-row"><span>2 heures</span><strong>250 €</strong></div>
-          <div class="rate-row"><span>3 heures</span><strong>400 €</strong></div>
-          <div class="rate-row"><span>Nuit (22 h–8 h)</span><strong>500 €</strong></div>
-          <p class="small">Disponibilité et conditions à confirmer directement.</p>
-        </div>
-      </div>
-    </section>
-
-    <section id="contact">
-      <div class="wrap contact">
-        <h2 class="section-title">Demande de rendez-vous <span>✦</span></h2>
-        <p class="intro">Indiquez la date, l'heure, la ville et la durée souhaitée. Chaque demande doit être confirmée directement. Les horaires doivent correspondre à l'heure locale du lieu du rendez-vous.</p>
-        <p style="margin-top:26px">
-          <a class="button" href="https://t.me/Luna_deplacement_bot" target="_blank" rel="noopener">Ouvrir le bot Telegram</a>
-        </p>
-      </div>
-    </section>
-  </main>
-
-  <footer>
-    <div class="wrap">© <span id="year"></span> Luna Deplacement · Profil indépendant · 18+</div>
-  </footer>
-
-  <script>
-    const photos = [
-      "E2VP8gdVIAMQfIQ.jpg_small.jpg",
-      "F13_pygX0AAV9kr.jpg_small.jpg",
-      "F8GE8dUXkAA_zYJ.jpg_small.jpg",
-      "FMquv7LUYAMuHYF.jpg_small.jpg",
-      "FSGD6kzVkAAfCay.jpg_small.jpg",
-      "FSk0Z64VEAQvdIt.jpg_small.jpg",
-      "FeHyWhJVIAA5yuB.jpg_small.jpg",
-      "FjK8OG3UAAAbbBQ.jpg_small.jpg",
-      "FnsIBAZakAIoqcl.jpg_small.jpg",
-      "FokLQfjaYAAQgRG.jpg_small.jpg",
-      "FsunwbKaIAAbTfo.jpg_small.jpg",
-      "GbNeA2CakAEhU5R.jpg_small.jpg",
-      "GtWTda8WQAArTcf.jpg_small.jpg",
-      "Gxm62xPWoAAOOnE.jpg_small.jpg"
-    ];
-    const base = "https://raw.githubusercontent.com/site0dev/luna-deplacement-bot/main/images/";
-    const gallery = document.getElementById("gallery");
-    photos.forEach((name, index) => {
-      const img = document.createElement("img");
-      img.className = "photo";
-      img.loading = "lazy";
-      img.alt = "Photo de la galerie Luna Deplacement " + (index + 1);
-      img.src = base + encodeURIComponent(name);
-      gallery.appendChild(img);
-    });
-    document.getElementById("year").textContent = new Date().getFullYear();
-  </script>
-</body>
-</html>
+<header><div class="wrap nav">
+<a class="brand" href="#accueil">☾ LUNA DEPLACEMENT</a>
+<nav aria-label="Navigation principale"><a href="#profil">Profil</a><a href="#galerie">Galerie</a><a href="#prestations">Prestations</a><a href="#tarifs">Tarifs</a><a href="#contact">Contact</a></nav>
+</div></header>
+<main>
+<section class="hero" id="accueil"><div class="wrap">
+<div class="moon">☾</div><div class="eyebrow">Profil privé indépendant · Disponible 24h/24</div>
+<h1>Luna Deplacement</h1>
+<p>Luna Deplacement | Profil privé indépendant. Disponible 24h/24. Déplacements sur demande. Français • English • Deutsch.</p>
+<a class="button" href="https://t.me/Agentlunadeplacement_Bot" target="_blank" rel="noopener">Contacter sur Telegram</a>
+<div><span class="age">Réservé aux adultes · 18+</span></div>
+</div></section>
+<section id="profil"><div class="wrap"><h2 class="section-title">Présentation <span>✦</span></h2>
+<div class="intro">Élégante et raffinée, cette charmante Française d’origine asiatique séduit par son charme naturel, sa douceur et son sourire envoûtant. Sensuelle, attentionnée et pleine de délicatesse, elle vous promet un moment de complicité et d’évasion dans une atmosphère chaleureuse et discrète.</div>
+</div></section>
+<section id="galerie"><div class="wrap"><h2 class="section-title">Galerie <span>✦</span></h2><div class="grid" id="gallery"></div><p class="gallery-note">Galerie photo — Luna Deplacement</p></div></section>
+<section id="prestations"><div class="wrap"><h2 class="section-title">Prestations <span>✦</span></h2><div class="grid">
+<article class="card"><h3>Moments de détente</h3><p>Informations sur les options proposées à découvrir lors d'un échange préalable.</p></article>
+<article class="card"><h3>Demandes personnalisées</h3><p>Les demandes particulières et leurs conditions sont à discuter directement, dans le respect du consentement et des limites de chacun.</p></article>
+<article class="card"><h3>Confort & discrétion</h3><p>Les modalités pratiques, le lieu et les disponibilités doivent être confirmés avant tout rendez-vous.</p></article>
+</div></div></section>
+<section id="tarifs"><div class="wrap"><h2 class="section-title">Tarifs <span>✦</span></h2><div class="card rates">
+<div class="rate"><span>15 minutes</span><strong>50 €</strong></div><div class="rate"><span>30 minutes</span><strong>100 €</strong></div><div class="rate"><span>1 heure</span><strong>150 €</strong></div><div class="rate"><span>2 heures</span><strong>250 €</strong></div><div class="rate"><span>3 heures</span><strong>400 €</strong></div><div class="rate"><span>Nuit (22 h–8 h)</span><strong>500 €</strong></div>
+<p class="note">Disponibilité et conditions à confirmer directement.</p></div></div></section>
+<section id="contact"><div class="wrap contact"><h2 class="section-title">Demande de rendez-vous <span>✦</span></h2>
+<p class="intro">Indiquez la date, l'heure, la ville et la durée souhaitée. Chaque demande doit être confirmée directement. Les horaires doivent correspondre à l'heure locale du lieu du rendez-vous.</p>
+<p style="margin-top:26px"><a class="button" href="https://t.me/Agentlunadeplacement_Bot" target="_blank" rel="noopener">Ouvrir le bot Telegram</a></p>
+</div></section>
+</main>
+<footer>© <span id="year"></span> Luna Deplacement · Profil privé indépendant · 18+</footer>
+<script>
+const photos=["E2VP8gdVIAMQfIQ.jpg_small.jpg","F13_pygX0AAV9kr.jpg_small.jpg","F8GE8dUXkAA_zYJ.jpg_small.jpg","FMquv7LUYAMuHYF.jpg_small.jpg","FSGD6kzVkAAfCay.jpg_small.jpg","FSk0Z64VEAQvdIt.jpg_small.jpg","FeHyWhJVIAA5yuB.jpg_small.jpg","FjK8OG3UAAAbbBQ.jpg_small.jpg","FnsIBAZakAIoqcl.jpg_small.jpg","FokLQfjaYAAQgRG.jpg_small.jpg","FsunwbKaIAAbTfo.jpg_small.jpg","GbNeA2CakAEhU5R.jpg_small.jpg","GtWTda8WQAArTcf.jpg_small.jpg","Gxm62xPWoAAOOnE.jpg_small.jpg"];
+const base="https://raw.githubusercontent.com/site0dev/luna-deplacement-bot/main/images/";
+const gallery=document.getElementById("gallery");
+photos.forEach((name,i)=>{const img=document.createElement("img");img.className="photo";img.loading="lazy";img.alt="Photo de la galerie Luna Deplacement "+(i+1);img.src=base+encodeURIComponent(name);gallery.appendChild(img);});
+document.getElementById("year").textContent=new Date().getFullYear();
+</script>
+</body></html>
